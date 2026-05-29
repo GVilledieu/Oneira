@@ -1,0 +1,8 @@
+@for (dream of Dreams; track dream.id) {
+  <li>{{ dream.title }}</li>
+  <li>{{ dream.date | date: "dd MMMM YYYY"}}</li>
+  <li>{{ dream.content }}</li>
+  <li>{{ dream.type }}</li>
+} @empty {
+  <li>Il n'y a pas de rêves.</li>
+}
