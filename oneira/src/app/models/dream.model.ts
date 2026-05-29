@@ -1,4 +1,4 @@
-type Dream = {
+export type Dream = {
     id: number,
     title : string,
     type: "normal" | "nightmare" | "lucid" | "recurring",

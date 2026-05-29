@@ -1,8 +1,15 @@
-@for (dream of Dreams; track dream.id) {
-  <li>{{ dream.title }}</li>
-  <li>{{ dream.date | date: "dd MMMM YYYY"}}</li>
-  <li>{{ dream.content }}</li>
-  <li>{{ dream.type }}</li>
+@for (dream of dreams; track dream.id) {
+    <div class="cards text-left mb-4 p-4 bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+        <ul>
+            <li>{{ dream.title }}</li>
+            <li>{{ dream.type }}</li>
+            <li>{{ dream.date | date: "dd MMMM YYYY"}}</li>
+            <li>{{ dream.content }}</li>
+            <li>{{ dream.id }}</li>
+            <li><button (click)="deleteDream(dream.id)">Supprimer</button></li>
+        </ul>
+    </div>
+
 } @empty {
-  <li>Il n'y a pas de rêves.</li>
+    <li>Il n'y a pas de rêves.</li>
 }
