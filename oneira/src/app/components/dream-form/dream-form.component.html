@@ -1,1 +1,20 @@
-<p>dream-form works!</p>
+
+<div class="container flex flex-col gap-5 py-5 px-4 w-full max-w-xl mx-auto">
+    <form class="flex flex-col "[formGroup]="dreamForm" (ngSubmit)="dreamformSubmit()">
+        <label for="title">Titre : </label>
+        <input id="title" type="text" formControlName="title" class="rounded text-white "/>
+
+        <label for="content">Contenu : </label>
+        <textarea id="content" formControlName="content" class="bg-black text-white"></textarea>
+
+        <label for="type">Type : </label>
+        <select id="type" formControlName="type">
+            <option value="normal">Normal</option>
+            <option value="lucid">Lucid</option>
+            <option value="recurring">Recurring</option>
+            <option value="nightmare">Nightmare</option>
+        </select>
+        <p>Complete the form to enable button.</p>
+        <button class="bg-blue-800 mt-3 p-2 rounded" type="submit" [disabled]="!dreamForm.valid">Submit</button>
+    </form>
+</div>

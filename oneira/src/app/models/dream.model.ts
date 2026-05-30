@@ -4,5 +4,4 @@ export type Dream = {
     type: "normal" | "nightmare" | "lucid" | "recurring",
     date: Date,
     content: string,
-
 }

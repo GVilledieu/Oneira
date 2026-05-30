@@ -1,8 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { DreamService } from '../../services/dream.service';
-import {Injectable} from '@angular/core';
-import { Dream } from '../../models/dream.model';
 
 @Component({
   selector: 'app-dream-list',
@@ -12,18 +10,15 @@ import { Dream } from '../../models/dream.model';
   styleUrl: './dream-list.component.css'
 })
 
-@Injectable({
-  providedIn: 'root'
-})
 export class DreamListComponent {
 
+  // Return current theme; used by effect to persist theme changes
   private dreamService = inject(DreamService);
 
-  dreams: Dream[] = this.dreamService.getDreams();
-
+  dreams= this.dreamService.DreamList;
+  
   deleteDream(id: number): void {
     this.dreamService.deleteDream(id);
-    this.dreams = this.dreamService.getDreams();
   }
 
 

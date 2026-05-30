@@ -1,13 +1,13 @@
 
     <div class="container flex flex-col gap-5 py-5 px-4 w-full max-w-2xl mx-auto">
-        @for (dream of dreams; track dream.id) {
+        @for (dream of dreams(); track dream.id) {
         <div class="cards bg-slate-900 p-4 rounded-lg flex flex-col  items-center justify-center w-full mx-auto shadow-lg  border border-slate-700 hover:bg-slate-800 transition-colors duration-300 cursor-pointer hover:scale-[1.01] transition ease-in-out">
             <ul class="flex flex-col gap-1 text-sm text-slate-300 w-full">
 
                 <li class="text-xl mb-5 font-bold">{{ dream.title }}</li>
                 <div class="flex justify-between">
                     @if (dream.type === 'lucid') {
-                        <div class="rounded bg-purple-800 text-sm text-purple-300 p-1 font-bold">LUCIDE</div>
+                        <div class="rounded bg-purple-800 text-sm text-purple-300 pt-1 pb-1 pl-2 pr-2 font-bold">LUCIDE</div>
                     } @else if (dream.type === 'nightmare') {
                         <div class="rounded bg-red-800 text-sm text-red-300 p-1 font-bold">CAUCHEMAR</div>
                     } @else if (dream.type === 'recurring') {

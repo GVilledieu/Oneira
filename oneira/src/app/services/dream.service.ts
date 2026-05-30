@@ -1,13 +1,33 @@
-import { Injectable } from "@angular/core";
+import { effect, Injectable } from "@angular/core";
 import { Dream } from "../models/dream.model";
 import {signal} from '@angular/core';
 
 
 @Injectable({ providedIn: 'root' })
 export class DreamService{
-    signal = signal<Dream[]>([]);
 
-    private DreamList = signal<Dream[]>([
+    constructor() {
+  
+        const storedDreams = localStorage.getItem('dreams');
+        if (storedDreams) {
+            try {
+                this.DreamList.set(JSON.parse(storedDreams));
+            } catch (error) {
+                console.error('Erreur lors du parsing des rêves depuis localStorage :', error);
+            }
+        } else {
+            localStorage.setItem('dreams', JSON.stringify(this.DreamList()));
+        }
+
+        effect(() => {
+        const dreams = this.DreamList();
+        localStorage.setItem('dreams', JSON.stringify(dreams));
+
+  });
+}
+
+
+    readonly DreamList = signal<Dream[]>([
         {
         id: 1,
         title: "Flying over the city",
@@ -46,12 +66,10 @@ export class DreamService{
         
      ]
     );
+
+
     addDream(dream: Dream): void {
         this.DreamList.update(dreams => [...dreams, dream]);
-    }
-
-    getDreams(): Dream[] {
-        return this.DreamList();
     }
 
     getDreamById(id: number): Dream | undefined {
