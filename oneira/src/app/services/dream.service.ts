@@ -1,4 +1,4 @@
-import { effect, Injectable } from "@angular/core";
+import { computed, effect, Injectable } from "@angular/core";
 import { Dream } from "../models/dream.model";
 import {signal} from '@angular/core';
 
@@ -23,9 +23,27 @@ export class DreamService{
         const dreams = this.DreamList();
         localStorage.setItem('dreams', JSON.stringify(dreams));
 
-  });
-}
+    });
+    }
 
+    selectedType = signal<"tous" | "normal" | "nightmare" | "lucid" | "recurring">("tous");
+
+    searchQuery = signal<string>("");
+
+    filteredDreams = computed(() => {
+        const type = this.selectedType();
+        const query = this.searchQuery().toLowerCase();
+        if (query) {
+            return this.DreamList().filter(dream => 
+                (type === "tous" || dream.type === type) &&
+                (dream.title.toLowerCase().includes(query) || dream.content.toLowerCase().includes(query))
+            );
+        } else
+        if (type === "tous") {
+            return this.DreamList();
+        } 
+        return this.DreamList().filter(dream => dream.type === type);
+    });
 
     readonly DreamList = signal<Dream[]>([
         {
@@ -78,16 +96,6 @@ export class DreamService{
 
     deleteDream(id: number): void {
         this.DreamList.update(dreams => dreams.filter(dream => dream.id !== id));
-    }
-
-    updateDream(id: number, updatedDream: Partial<Dream>): void {
-        const dreamIndex = this.DreamList().findIndex(dream => dream.id === id);
-        if (dreamIndex !== -1) {
-            this.DreamList.update(dreams => {
-                dreams[dreamIndex] = { ...dreams[dreamIndex], ...updatedDream };
-                return dreams;
-            });
-        }
     }
 
     

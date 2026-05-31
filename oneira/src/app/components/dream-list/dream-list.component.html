@@ -1,31 +1,60 @@
+    <div>
+        <input #searchQuery type="text" placeholder="Rechercher..." class="flex justify-center w-full max-w-2xl mx-auto mb-5 px-4 py-2 rounded bg-slate-800 text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2   focus:ring-offset-slate-900 transition-colors duration-300 " (input)="onSearchUpdate(searchQuery.value)">
+    </div>
+    <div class="filters mb-10">
+        <div class="container flex justify-center gap-4 mb-5 px-4 w-full max-w-2xl mx-auto">
+            @for (filter of filters; track filter.value) {
 
-    <div class="container flex flex-col gap-5 py-5 px-4 w-full max-w-2xl mx-auto">
-        @for (dream of dreams(); track dream.id) {
-        <div class="cards bg-slate-900 p-4 rounded-lg flex flex-col  items-center justify-center w-full mx-auto shadow-lg  border border-slate-700 hover:bg-slate-800 transition-colors duration-300 cursor-pointer hover:scale-[1.01] transition ease-in-out">
-            <ul class="flex flex-col gap-1 text-sm text-slate-300 w-full">
-
-                <li class="text-xl mb-5 font-bold">{{ dream.title }}</li>
-                <div class="flex justify-between">
-                    @if (dream.type === 'lucid') {
-                        <div class="rounded bg-purple-800 text-sm text-purple-300 pt-1 pb-1 pl-2 pr-2 font-bold">LUCIDE</div>
-                    } @else if (dream.type === 'nightmare') {
-                        <div class="rounded bg-red-800 text-sm text-red-300 p-1 font-bold">CAUCHEMAR</div>
-                    } @else if (dream.type === 'recurring') {
-                        <div class="rounded bg-yellow-800 text-sm text-yellow-300 p-1 font-bold">RÉCURRENT</div>
-                    } @else {
-                        <div class="rounded bg-slate-800 text-sm text-slate-300 p-1 font-bold">NORMAL</div>
-                    } 
-                    <p>{{dream.date | date: "longDate"}}</p>
-                </div>
-                <li class="text-slate-400">{{ dream.content }}</li>
-            </ul>
-            <div class="flex self-end gap-2 mt-3">
-                <button class="bg-blue-800 mt-3 p-2 rounded">Modifier</button>
-               <button class="bg-red-800 mt-3 p-2 rounded" (click)="deleteDream(dream.id)">Supprimer</button>
-            </div>
-
+                @if (filter.value === selectedType()) {
+                    <button class="{{ filter.activeClass }} text-slate-300 p-2 rounded" (click)="selectType(filter.value)">{{ filter.label }}</button>
+                } @else {
+                    <button class="bg-slate-800 text-slate-300 p-2 rounded hover:bg-slate-900 focus:bg-slate-700 focus:ring-brand-medium" (click)="selectType(filter.value)">{{ filter.label }}</button>
+                }
+            }
         </div>
-        } @empty {
-            <div>Il n'y a pas de rêves.</div>
-        }
+    </div>
+    <div class="stats text-mb-5 px-4 w-full max-w-2xl mx-auto ">
+        <h2 class="text-3xl font-bold text-center mb-5 ">📊 Statistiques</h2>
+        <div class="container mb-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full max-w-2xl mx-auto">
+            @for (filter of filters; track filter.value) {
+            <div class="cards text-slate-400  border border-slate-700 p-4 rounded-lg bg-slate-800 w-full text-center">{{filter.label}}
+                <div class="font-bold text-center mt-2">{{ countDreamsType(filter.value) }}</div>
+            </div>
+            
+            }
+        </div>
+    </div>
+    <div>
+        <h1 class="text-3xl font-bold text-center mt-5 mb-2">Mes Rêves</h1>
+    </div>
+    <div class="container flex flex-col gap-5 py-5 px-4 w-full max-w-2xl mx-auto">
+        @for (dream of filteredDreams(); track dream.id) {
+            
+            <div class="cards bg-slate-900 p-4 rounded-lg flex flex-col  items-center justify-center w-full mx-auto shadow-lg  border border-slate-700 hover:bg-slate-800 duration-300 cursor-pointer hover:scale-[1.01] transition ease-in-out">
+                <ul class="flex flex-col gap-1 text-sm text-slate-300 w-full">
+
+                    <h1 class="text-xl mb-5 font-bold">{{ dream.title }}</h1>
+                    <div class="flex justify-between">
+                        @if (dream.type === 'lucid') {
+                            <div class="rounded bg-purple-800 text-sm text-purple-300 pt-1 pb-1 pl-2 pr-2 font-bold">LUCIDE</div>
+                        } @else if (dream.type === 'nightmare') {
+                            <div class="rounded bg-red-800 text-sm text-red-300 p-1 font-bold">CAUCHEMAR</div>
+                        } @else if (dream.type === 'recurring') {
+                            <div class="rounded bg-yellow-800 text-sm text-yellow-300 p-1 font-bold">RÉCURRENT</div>
+                        } @else {
+                            <div class="rounded bg-slate-800 text-sm text-slate-300 p-1 font-bold">NORMAL</div>
+                        } 
+                        <p>{{dream.date | date: "longDate"}}</p>
+                    </div>
+                    <p class="text-slate-400">{{ dream.content }}</p>
+                </ul>
+                <div class="flex self-end gap-2 mt-3">
+                    <button class="bg-blue-800 mt-3 p-2 rounded">Modifier</button>
+                <button class="bg-red-800 mt-3 p-2 rounded" (click)="deleteDream(dream.id)">Supprimer</button>
+                </div>
+
+            </div>
+            } @empty {
+                <div>Il n'y a pas de rêves.</div>
+            }
     </div>
