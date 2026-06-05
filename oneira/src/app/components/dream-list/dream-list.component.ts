@@ -3,11 +3,12 @@ import { DatePipe } from '@angular/common';
 import { DreamService } from '../../services/dream.service';
 import { DreamTypeFilter } from '../../models/dream-filters.model';
 import { Dream } from '../../models/dream.model';
+import { DreamFormComponent } from "../dream-form/dream-form.component";
 
 @Component({
   selector: 'app-dream-list',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, DreamFormComponent],
   templateUrl: './dream-list.component.html',
   styleUrl: './dream-list.component.css'
 })
@@ -47,6 +48,11 @@ export class DreamListComponent {
     this.dreamService.deleteDream(id);
   }
 
+  updateDream(id: number, updatedDream: Dream): void {
+    this.dreamService.startEditingDream(id);
+    // this.dreamService.updateDream(id, updatedDream);
+  }
+
   countDreamsType(type: DreamTypeFilter) : number {
 
     if (type =="tous"){
@@ -57,6 +63,8 @@ export class DreamListComponent {
     }
 
   }
+
+
 
 
 }

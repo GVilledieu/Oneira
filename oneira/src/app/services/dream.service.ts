@@ -1,13 +1,13 @@
-import { computed, effect, Injectable } from "@angular/core";
+import { computed, effect, Injectable, Signal } from "@angular/core";
 import { Dream } from "../models/dream.model";
 import {signal} from '@angular/core';
+import { Form, FormGroup } from "@angular/forms";
 
 
 @Injectable({ providedIn: 'root' })
 export class DreamService{
 
     constructor() {
-  
         const storedDreams = localStorage.getItem('dreams');
         if (storedDreams) {
             try {
@@ -22,6 +22,7 @@ export class DreamService{
         effect(() => {
         const dreams = this.DreamList();
         localStorage.setItem('dreams', JSON.stringify(dreams));
+        
 
     });
     }
@@ -98,5 +99,22 @@ export class DreamService{
         this.DreamList.update(dreams => dreams.filter(dream => dream.id !== id));
     }
 
-    
+    selectedDreamToEdit = signal<Dream | undefined>(undefined);
+
+    startEditingDream(id : number) {
+        const dream = this.getDreamById(id);
+
+        if (dream) {
+            this.selectedDreamToEdit.set(dream);
+        }
+        
+    }
+
+    updateDream(id: number, updatedDream: Dream): void {
+        this.DreamList.update(dreams =>
+        dreams.map(dream => dream.id === id ? updatedDream : dream
+        )
+    );
+        this.selectedDreamToEdit.set(undefined);
+    }
 }

@@ -1,5 +1,15 @@
-    <div>
-        <input #searchQuery type="text" placeholder="Rechercher..." class="flex justify-center w-full max-w-2xl mx-auto mb-5 px-4 py-2 rounded bg-slate-800 text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2   focus:ring-offset-slate-900 transition-colors duration-300 " (input)="onSearchUpdate(searchQuery.value)">
+    <h1 class="text-3xl font-bold text-center mb-5">Ajouter un Rêve</h1>
+    <app-dream-form class="mb-5"></app-dream-form>
+    <div class="stats text-mb-5 px-4 w-full max-w-2xl mx-auto ">
+        <h2 class="text-3xl font-bold text-center mb-5 ">📊 Statistiques</h2>
+        <div class="container mb-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full max-w-2xl mx-auto">
+            @for (filter of filters; track filter.value) {
+            <div class="cards text-slate-400  border border-slate-700 p-4 rounded-lg bg-slate-800 w-full text-center">{{filter.label}}
+                <div class="font-bold text-center mt-2">{{ countDreamsType(filter.value) }}</div>
+            </div>
+            
+            }
+        </div>
     </div>
     <div class="filters mb-10">
         <div class="container flex justify-center gap-4 mb-5 px-4 w-full max-w-2xl mx-auto">
@@ -13,16 +23,8 @@
             }
         </div>
     </div>
-    <div class="stats text-mb-5 px-4 w-full max-w-2xl mx-auto ">
-        <h2 class="text-3xl font-bold text-center mb-5 ">📊 Statistiques</h2>
-        <div class="container mb-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full max-w-2xl mx-auto">
-            @for (filter of filters; track filter.value) {
-            <div class="cards text-slate-400  border border-slate-700 p-4 rounded-lg bg-slate-800 w-full text-center">{{filter.label}}
-                <div class="font-bold text-center mt-2">{{ countDreamsType(filter.value) }}</div>
-            </div>
-            
-            }
-        </div>
+    <div>
+        <input #searchQuery type="text" placeholder="Rechercher..." class="flex justify-center w-full max-w-2xl mx-auto mb-5 px-4 py-2 rounded bg-slate-800 text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2   focus:ring-offset-slate-900 transition-colors duration-300 " (input)="onSearchUpdate(searchQuery.value)">
     </div>
     <div>
         <h1 class="text-3xl font-bold text-center mt-5 mb-2">Mes Rêves</h1>
@@ -49,7 +51,7 @@
                     <p class="text-slate-400">{{ dream.content }}</p>
                 </ul>
                 <div class="flex self-end gap-2 mt-3">
-                    <button class="bg-blue-800 mt-3 p-2 rounded">Modifier</button>
+                    <button class="bg-blue-800 mt-3 p-2 rounded" (click)="updateDream(dream.id, dream)">Modifier</button>
                 <button class="bg-red-800 mt-3 p-2 rounded" (click)="deleteDream(dream.id)">Supprimer</button>
                 </div>
 
