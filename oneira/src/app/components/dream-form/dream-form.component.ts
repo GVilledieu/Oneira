@@ -1,5 +1,5 @@
-import { Component, effect, inject, Injectable } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { Component, effect, inject } from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { DreamService } from '../../services/dream.service';
 import { Dream } from '../../models/dream.model';
 
@@ -46,36 +46,38 @@ dreamForm = this.formBuilder.group({
   }
   
 dreamformSubmit(): void {
-    if (this.dreamForm.valid) {
-      const newDream = this.dreamForm.value;
-      
-      const parsedDream : Dream = {
-        id: Date.now(),
-        title: (newDream.title ?? '') as string,
-        content: (newDream.content ?? '') as string,
-        type: (newDream.type ?? 'normal') as "normal" | "nightmare" | "lucid" | "recurring",
-        date: new Date()
-      }
-
-      const selectedDream = this.selectedDreamToEdit();
-
-      if (selectedDream){
-        parsedDream.id = selectedDream.id;
-        parsedDream.date = selectedDream.date;
-
-        this.dreamService.updateDream(selectedDream.id, parsedDream);
-        this.dreamForm.reset();
-        
   
-
-      } else {
-        this.dreamService.addDream(parsedDream);
-        this.dreamForm.reset();
-      }
-
-    } else {
+    if (!this.dreamForm.valid) {
       console.log('Le formulaire est invalide');
+      return;
     }
+
+    const formValue = this.dreamForm.value;
+
+    const selectedDream = this.selectedDreamToEdit();
+
+    if (selectedDream) {
+      const updatedDream: Dream = {
+        ...selectedDream,
+        title: formValue.title ?? '',
+        content: formValue.content ?? '',
+        type: (formValue.type ?? 'normal') as Dream['type']
+      };
+
+      this.dreamService.updateDream(selectedDream.id, updatedDream);
+    } else {
+      const newDream: Dream = {
+        id: Date.now(),
+        date: new Date(),
+        title: formValue.title ?? '',
+        content: formValue.content ?? '',
+        type: (formValue.type ?? 'normal') as Dream['type']
+      };
+
+      this.dreamService.addDream(newDream);
+    }
+
+    this.dreamForm.reset({ type: 'normal' });
   }
 
 }
