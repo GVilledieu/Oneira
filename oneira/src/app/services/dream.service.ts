@@ -114,6 +114,6 @@ export class DreamService{
         dreams.map(dream => dream.id === id ? updatedDream : dream
         )
     );
-        this.selectedDreamToEdit.set(undefined);
+        this.selectedDreamToEdit.set(undefined)
     }
 }

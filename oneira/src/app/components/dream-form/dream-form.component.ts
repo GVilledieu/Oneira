@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, output } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { DreamService } from '../../services/dream.service';
 import { Dream } from '../../models/dream.model';
@@ -29,6 +29,8 @@ constructor(){
 private dreamService = inject(DreamService);
 private formBuilder = inject(FormBuilder);
 
+formSubmitted = output<void>();
+
 selectedDreamToEdit = this.dreamService.selectedDreamToEdit;
   
 dreamForm = this.formBuilder.group({
@@ -47,6 +49,7 @@ dreamForm = this.formBuilder.group({
   
 dreamformSubmit(): void {
   
+
     if (!this.dreamForm.valid) {
       console.log('Le formulaire est invalide');
       return;
@@ -77,6 +80,7 @@ dreamformSubmit(): void {
       this.dreamService.addDream(newDream);
     }
 
+    this.formSubmitted.emit();
     this.dreamForm.reset({ type: 'normal' });
   }
 

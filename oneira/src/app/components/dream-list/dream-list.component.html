@@ -1,5 +1,23 @@
-    <h1 class="text-3xl font-bold text-center mb-5">Ajouter un Rêve</h1>
-    <app-dream-form class="mb-5"></app-dream-form>
+    <h1 class="text-3xl font-bold text-center mb-5">
+        <button class="btn-add-dream" (click)="openModal()">Ajouter un Rêve </button> 
+    </h1>
+
+     @if(isModalOpen()){
+        <div class="overlay fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+            <div class="modal flex flex-col justify-center bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-lg after:inline-block content-\00d7">
+                <div class="header flex justify-between">
+                    @if(selectedDreamToEdit()){
+                        <h1 class="text-2xl mb-5 font-bold m-auto">Modifier un rêve</h1>
+                    } @else {
+                        <h1 class="text-2xl mb-5 font-bold m-auto">Ajouter un rêve</h1>
+                    }
+                    <button class="close flex flex-row text-end text-xl font-bold text-slate-400 hover:text-white" (click)="closeModal()">✕</button>
+                </div>
+                <app-dream-form class="mb-5" (formSubmitted)="closeModal()"></app-dream-form>
+            </div>
+        </div>
+     }
+    
     <div class="stats text-mb-5 px-4 w-full max-w-2xl mx-auto ">
         <h2 class="text-3xl font-bold text-center mb-5 ">📊 Statistiques</h2>
         <div class="container mb-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full max-w-2xl mx-auto">
@@ -51,7 +69,7 @@
                     <p class="text-slate-400">{{ dream.content }}</p>
                 </ul>
                 <div class="flex self-end gap-2 mt-3">
-                    <button class="bg-blue-800 mt-3 p-2 rounded" (click)="updateDream(dream.id, dream)">Modifier</button>
+                    <button class="bg-blue-800 mt-3 p-2 rounded" (click)="updateDream(dream.id)">Modifier</button>
                 <button class="bg-red-800 mt-3 p-2 rounded" (click)="deleteDream(dream.id)">Supprimer</button>
                 </div>
 

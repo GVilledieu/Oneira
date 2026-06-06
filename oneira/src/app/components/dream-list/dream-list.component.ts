@@ -1,8 +1,7 @@
-import { Component, inject, effect, signal } from '@angular/core';
+import { Component, inject, output, Output, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { DreamService } from '../../services/dream.service';
 import { DreamTypeFilter } from '../../models/dream-filters.model';
-import { Dream } from '../../models/dream.model';
 import { DreamFormComponent } from "../dream-form/dream-form.component";
 
 @Component({
@@ -14,12 +13,13 @@ import { DreamFormComponent } from "../dream-form/dream-form.component";
 })
 
 export class DreamListComponent {
-
   private dreamService = inject(DreamService);
-
+  
+  isModalOpen = signal<boolean>(false);
+  
   dreams= this.dreamService.DreamList;
-
   filteredDreams = this.dreamService.filteredDreams;
+  selectedDreamToEdit = this.dreamService.selectedDreamToEdit;
 
   selectedType = this.dreamService.selectedType;  
 
@@ -48,9 +48,9 @@ export class DreamListComponent {
     this.dreamService.deleteDream(id);
   }
 
-  updateDream(id: number, updatedDream: Dream): void {
+  updateDream(id: number): void {
+    this.openModal();
     this.dreamService.startEditingDream(id);
-    // this.dreamService.updateDream(id, updatedDream);
   }
 
   countDreamsType(type: DreamTypeFilter) : number {
@@ -64,6 +64,14 @@ export class DreamListComponent {
 
   }
 
+  openModal(): void {
+    this.isModalOpen.set(true);
+    
+  }
+
+  closeModal():void {
+    this.isModalOpen.set(false);
+  }
 
 
 
