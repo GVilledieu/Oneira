@@ -99,12 +99,14 @@ export class DreamService{
     }
 
     selectedDreamToEdit = signal<Dream | undefined>(undefined);
-
+    editOrCreateLabel = signal<"Ajouter un rêve" | "Modifier un rêve">("Ajouter un rêve");
+    
     startEditingDream(id : number) {
         const dream = this.getDreamById(id);
 
         if (dream) {
             this.selectedDreamToEdit.set(dream);
+            this.editOrCreateLabel.set("Modifier un rêve")
         }
         
     }

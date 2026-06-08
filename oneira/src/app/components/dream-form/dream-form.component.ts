@@ -1,4 +1,4 @@
-import { Component, effect, inject, output } from '@angular/core';
+import { Component, effect, inject, output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DreamService } from '../../services/dream.service';
 import { Dream } from '../../models/dream.model';
@@ -30,9 +30,11 @@ export class DreamFormComponent {
 
   // Informe le composant parent (DreamListComponent) que la soumission est terminée.
   formSubmitted = output<void>();
+  cancel = output<void>();
 
   // Signal contenant le rêve actuellement édité (si présent).
   selectedDreamToEdit = this.dreamService.selectedDreamToEdit;
+  editOrCreateLabel = this.dreamService.editOrCreateLabel;
 
   // Formulaire réactif utilisé pour la création et l’édition.
   dreamForm = this.formBuilder.group({
@@ -69,7 +71,7 @@ export class DreamFormComponent {
         content: formValue.content ?? '',
         type: (formValue.type ?? 'normal') as Dream['type'],
       };
-
+      
       this.dreamService.updateDream(selectedDream.id, updatedDream);
       this.toast.show("Rêve modifié", "info")
       
@@ -82,7 +84,6 @@ export class DreamFormComponent {
         content: formValue.content ?? '',
         type: (formValue.type ?? 'normal') as Dream['type'],
       };
-
       this.dreamService.addDream(newDream);
       this.toast.show("Rêve ajouté", "success")
     }

@@ -44,6 +44,7 @@ export class DreamListComponent {
   // Signal de recherche utilisé par DreamService pour filtrer.
 
   searchQuery = this.dreamService.searchQuery;
+  editOrCreateLabel = this.dreamService.editOrCreateLabel;
 
   // Appelée à chaque modification de la barre de recherche.
 
@@ -94,6 +95,8 @@ export class DreamListComponent {
 
   closeModal(): void {
     this.isModalOpen.set(false);
+    this.selectedDreamToEdit.set(undefined);
+    this.editOrCreateLabel.set("Ajouter un rêve");
   }
 }
 

@@ -1,6 +1,11 @@
-@if(visible()){
-    <div class="toast container bottom-0 fixed max-w-full flex items-center justify-center z-50 " [class]="color()">
-        <h1>{{message()}}</h1>
-    </div>
-
-}
+<div
+  class="fixed overflow-hidden right-4 px-4 py-3 z-50 rounded-xl transition-all duration-300 shadow-lg"
+  [class.translate-x-0]="visible()"
+  [class.opacity-100]="visible()"
+  [class.translate-x-full]="!visible()"
+  [class.opacity-0]="!visible()"
+  [ngClass]="color()"
+>
+  <h1>{{ message() }}</h1>
+  <div class="absolute bottom-0 left-0 h-1 bg-white/70 animate-toast-progress"></div>
+</div>
