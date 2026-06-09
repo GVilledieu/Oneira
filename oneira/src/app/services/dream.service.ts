@@ -1,10 +1,8 @@
-import { computed, effect, Injectable, signal } from '@angular/core';
+import { computed, effect, Injectable, signal} from '@angular/core';
 import { Dream } from '../models/dream.model';
 
-
-
 @Injectable({ providedIn: 'root' })
-export class DreamService{
+export class DreamService {
 
     constructor() {
         const storedDreams = localStorage.getItem('dreams');
@@ -27,7 +25,8 @@ export class DreamService{
     }
 
     selectedType = signal<"tous" | "normal" | "nightmare" | "lucid" | "recurring">("tous");
-
+    selectedDreamToEdit = signal<Dream | undefined>(undefined);
+    editOrCreateLabel = signal<"Ajouter un rêve" | "Modifier un rêve">("Ajouter un rêve");
     searchQuery = signal<string>("");
 
     filteredDreams = computed(() => {
@@ -98,8 +97,7 @@ export class DreamService{
         this.DreamList.update(dreams => dreams.filter(dream => dream.id !== id));
     }
 
-    selectedDreamToEdit = signal<Dream | undefined>(undefined);
-    editOrCreateLabel = signal<"Ajouter un rêve" | "Modifier un rêve">("Ajouter un rêve");
+
     
     startEditingDream(id : number) {
         const dream = this.getDreamById(id);
@@ -117,5 +115,25 @@ export class DreamService{
         )
     );
         this.selectedDreamToEdit.set(undefined)
+    }
+
+    exportDreams(): void {
+        const exportedDreams= JSON.stringify(this.DreamList(), null, 2);
+        const exportedDreamsBlob = new Blob([exportedDreams], {
+        type: "application/json",
+        });
+
+        const url = URL.createObjectURL(exportedDreamsBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'oneira-dreams.json';
+        a.click();
+
+        URL.revokeObjectURL(url);
+    }
+
+        replaceDreams(dreams: Dream[]): void {
+            
+        this.DreamList.set(dreams);
     }
 }

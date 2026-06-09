@@ -1,10 +1,9 @@
 <div class="overlay fixed inset-0 bg-black/60 flex items-center justify-center z-50">
     <div class="modal flex flex-col justify-center bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-lg after:inline-block content-\00d7">
         <div class="header flex justify-between">
-            {{title()}}
+            <span class="m-auto pb-10">{{title()}}</span>
             <button class="close flex flex-row text-end text-xl font-bold text-slate-400 hover:text-white" (click)="cancelled.emit()">✕</button>
         </div>
-        <span>{{message()}}</span>
 
         <div class="flex flex-row justify-between">
             <button class="bg-red-800  mt-3 p-2 rounded disabled:opacity-50 disabled:bg-slate-500" type="button" (click)="cancelled.emit()">{{cancelLabel()}}</button>

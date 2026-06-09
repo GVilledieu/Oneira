@@ -110,8 +110,34 @@ export class DreamListComponent {
     this.isConfirmationModalOpen.set(false);
   }
 
-  // Masque la modale
+  exportDreams(): void{
+    this.dreamService.exportDreams();
+  }
+ 
+  importDreams(event: Event): void {
+    console.log("ICI MEME")
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
 
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const content = reader.result as string;
+      const importedDreams = JSON.parse(content);
+
+      const dreams = importedDreams.map((dream: any) => ({
+      ...dream,
+      date: new Date(dream.date)
+    }));
+
+    this.dreamService.replaceDreams(dreams);
+   
+    };
+
+    reader.readAsText(file);
+}
 
 }
 
