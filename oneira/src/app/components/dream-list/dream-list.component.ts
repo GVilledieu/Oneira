@@ -4,11 +4,13 @@ import { DreamService } from '../../services/dream.service';
 import { DreamTypeFilter } from '../../models/dream-filters.model';
 import { DreamFormComponent } from "../dream-form/dream-form.component";
 import { ToastComponent } from "../toast/toast.component";
+import { ConfirmationModalComponent } from "../confirmation-modal/confirmation-modal.component";
+import { Dream } from '../../models/dream.model';
 
 @Component({
   selector: 'app-dream-list',
   standalone: true,
-  imports: [DatePipe, DreamFormComponent, ToastComponent],
+  imports: [DatePipe, DreamFormComponent, ToastComponent, ConfirmationModalComponent],
   templateUrl: './dream-list.component.html',
   styleUrl: './dream-list.component.css'
 })
@@ -20,6 +22,7 @@ export class DreamListComponent {
   // Contrôle l’affichage de la modale « édition/création ».
 
   isModalOpen = signal<boolean>(false);
+  isConfirmationModalOpen = signal<boolean>(false);
 
   // Signals exposés par DreamService.
 
@@ -45,7 +48,7 @@ export class DreamListComponent {
 
   searchQuery = this.dreamService.searchQuery;
   editOrCreateLabel = this.dreamService.editOrCreateLabel;
-
+  dreamToDelete = signal<Dream | undefined>(undefined);
   // Appelée à chaque modification de la barre de recherche.
 
   onSearchUpdate(searchContent: string): void {
@@ -64,7 +67,9 @@ export class DreamListComponent {
   // Supprime un rêve à partir de son id.
 
   deleteDream(id: number): void {
+    this.isConfirmationModalOpen.set(true);
     this.dreamService.deleteDream(id);
+    this.closeConfirmationModal();
   }
 
   // Ouvre la modale et démarre l’édition du rêve sélectionné.
@@ -90,13 +95,23 @@ export class DreamListComponent {
     this.isModalOpen.set(true);
   }
 
-  // Masque la modale
-
-
   closeModal(): void {
     this.isModalOpen.set(false);
     this.selectedDreamToEdit.set(undefined);
     this.editOrCreateLabel.set("Ajouter un rêve");
   }
+
+  openConfirmationModal(dream: Dream): void {
+    this.dreamToDelete.set(dream)
+    this.isConfirmationModalOpen.set(true);
+  }
+
+  closeConfirmationModal(): void {
+    this.isConfirmationModalOpen.set(false);
+  }
+
+  // Masque la modale
+
+
 }
 

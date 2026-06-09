@@ -23,6 +23,18 @@
             </div>
         </div>
      }
+        @if(isConfirmationModalOpen() && dreamToDelete()) {
+
+            <app-confirmation-modal
+                [title]="'Supprimer ce rêve ?'"
+                [message]="dreamToDelete()!.title"
+                (confirmed)="deleteDream(dreamToDelete()!.id)"
+                (cancelled)="closeConfirmationModal()"
+            />
+
+        }
+
+     
     
     <div class="stats text-mb-5 px-4 w-full max-w-2xl mx-auto ">
         <h2 class="text-3xl font-bold text-center mb-5 ">📊 Statistiques</h2>
@@ -75,8 +87,10 @@
                     <p class="text-slate-400">{{ dream.content }}</p>
                 </ul>
                 <div class="flex self-end gap-2 mt-3">
+
                     <button class="bg-blue-800 mt-3 p-2 rounded" (click)="updateDream(dream.id)">Modifier</button>
-                <button class="bg-red-800 mt-3 p-2 rounded" (click)="deleteDream(dream.id)">Supprimer</button>
+                    <button class="bg-red-800 mt-3 p-2 rounded" (click)="openConfirmationModal(dream)">Supprimer</button>
+
                 </div>
 
             </div>
