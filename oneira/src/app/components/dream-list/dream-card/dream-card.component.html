@@ -1,0 +1,26 @@
+<div class="cards bg-slate-900 p-4 rounded-lg flex flex-col  items-center justify-center w-full mx-auto shadow-lg  border border-slate-700 hover:bg-slate-800 duration-300 cursor-pointer hover:scale-[1.01] transition ease-in-out">
+    <ul class="flex flex-col gap-1 text-sm text-slate-300 w-full">
+
+        <h1 class="text-xl mb-5 font-bold">{{ dream().title }}</h1>
+        <div class="flex justify-between">
+            @if (dream().type === 'lucid') {
+                <div class="rounded bg-purple-800 text-sm text-purple-300 pt-1 pb-1 pl-2 pr-2 font-bold">LUCIDE</div>
+            } @else if (dream().type === 'nightmare') {
+                <div class="rounded bg-red-800 text-sm text-red-300 p-1 font-bold">CAUCHEMAR</div>
+            } @else if (dream().type === 'recurring') {
+                <div class="rounded bg-yellow-800 text-sm text-yellow-300 p-1 font-bold">RÉCURRENT</div>
+            } @else {
+                <div class="rounded bg-slate-800 text-sm text-slate-300 p-1 font-bold">NORMAL</div>
+            } 
+            <p>{{dream().date | date: "longDate"}}</p>
+        </div>
+        <p class="text-slate-400">{{ dream().content }}</p>
+    </ul>
+    <div class="flex self-end gap-2 mt-3">
+
+        <button class="bg-blue-800 mt-3 p-2 rounded" (click)="edit.emit(dream().id)">Modifier</button>
+        <button class="bg-red-800 mt-3 p-2 rounded" (click)="delete.emit(dream())">Supprimer</button>
+
+    </div>
+
+</div>

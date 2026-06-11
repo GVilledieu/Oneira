@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { DreamListComponent } from './components/dream-list/dream-list.component';
-import { DreamFormComponent } from './components/dream-form/dream-form.component';
+import { DreamFormComponent } from './components/dream-list/dream-form/dream-form.component';
 
 export const routes: Routes = [
   { path: '', component: DreamListComponent },

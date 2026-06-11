@@ -1,8 +1,8 @@
 import { Component, effect, inject, output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DreamService } from '../../services/dream.service';
-import { Dream } from '../../models/dream.model';
-import { ToastService } from '../../services/toast.service';
+import { DreamService } from '../../../services/dream.service';
+import { Dream } from '../../../models/dream.model';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-dream-form',

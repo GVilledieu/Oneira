@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DreamListComponent } from "./components/dream-list/dream-list.component";
-import { DreamFormComponent } from "./components/dream-form/dream-form.component";
+import { DreamFormComponent } from "./components/dream-list/dream-form/dream-form.component";
 
 @Component({
   selector: 'app-root',
