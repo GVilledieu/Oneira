@@ -6,6 +6,7 @@ import { DreamFormComponent } from "../dream-form/dream-form.component";
 import { ToastComponent } from "../toast/toast.component";
 import { ConfirmationModalComponent } from "../confirmation-modal/confirmation-modal.component";
 import { Dream } from '../../models/dream.model';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-dream-list',
@@ -18,11 +19,15 @@ import { Dream } from '../../models/dream.model';
 export class DreamListComponent {
 
   private dreamService = inject(DreamService);
+  private toast = inject(ToastService);
 
   // Contrôle l’affichage de la modale « édition/création ».
 
   isModalOpen = signal<boolean>(false);
   isConfirmationModalOpen = signal<boolean>(false);
+  isImportModalOpen = signal<boolean>(false);
+  selectedFile = signal<File | null>(null)
+  selectedFileName = signal<string>("");
 
   // Signals exposés par DreamService.
 
@@ -113,31 +118,60 @@ export class DreamListComponent {
   exportDreams(): void{
     this.dreamService.exportDreams();
   }
- 
-  importDreams(event: Event): void {
-    console.log("ICI MEME")
+
+  onFileSelected(event: Event) :void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
 
     if (!file) return;
 
-    const reader = new FileReader();
+    this.selectedFile.set(file);
+    this.selectedFileName.set(file.name);
+  }
 
-    reader.onload = () => {
+ confirmImport(): void {
+  const file = this.selectedFile();
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    try {
       const content = reader.result as string;
+
       const importedDreams = JSON.parse(content);
 
       const dreams = importedDreams.map((dream: any) => ({
-      ...dream,
-      date: new Date(dream.date)
-    }));
+        ...dream,
+        date: new Date(dream.date)
+      }));
 
-    this.dreamService.replaceDreams(dreams);
-   
-    };
+      this.dreamService.replaceDreams(dreams);
+      this.selectedFileName.set("");
+      this.selectedFile.set(null)
+      this.isImportModalOpen.set(false);
+      this.toast.show("Vos rêves ont bien été importés", "success")
+      
+    } catch (error) {
+      this.toast.show("Une erreur s'est produite", "error")
+      this.isImportModalOpen.set(false);
+ 
+    }
+  };
 
-    reader.readAsText(file);
+  reader.readAsText(file);
 }
+
+  openImportModal(){
+    this.isImportModalOpen.set(true);
+  }
+
+  closeImportModal(){
+    this.isImportModalOpen.set(false);
+    this.selectedFile.set(null);
+    this.selectedFileName.set("")
+  }
 
 }
 
