@@ -13,5 +13,5 @@ export class DreamCardComponent {
   dream = input.required<Dream>();
 
   edit = output<number>();
-  delete = output<Dream>();
+  delete = output<Dream>(); 
 }
