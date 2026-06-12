@@ -1,13 +1,13 @@
-package com.example.demo;
+package com.oneira.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication {
+public class OneiraApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(OneiraApiApplication.class, args);
 	}
 
 }
