@@ -71,7 +71,7 @@
             <app-confirmation-modal
                 [title]="'Supprimer ce rêve ?'"
                 [message]="dreamToDelete()!.title"
-                (confirmed)="deleteDream(dreamToDelete()!.id)"
+                (confirmed)="deleteDream(dreamToDelete()!.id!)"
                 (cancelled)="closeConfirmationModal()"
             />
 

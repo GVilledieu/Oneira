@@ -30,7 +30,19 @@ public class DreamService {
     }
 
     public Dream createDream(Dream dream){ 
-        return dreamRepository.save(dream);
+
+        if (
+            dream.getTitle() == null 
+            || dream.getTitle().isBlank()
+            || dream.getContent() == null 
+            || dream.getContent().isBlank()
+            || dream.getType() == null 
+            || dream.getType().isBlank()) {
+                throw new IllegalArgumentException("Dream fields cannot be null");
+        } else {
+            return dreamRepository.save(dream);
+        }
+        
     }
 
     public Dream updateDream(Long id, Dream dream){ 
@@ -45,7 +57,8 @@ public class DreamService {
             return updatedDream;
     }
 
-    public void deleteDream(Long id){
+    public void deleteDream(Long id) {
+        getDreamById(id);
         dreamRepository.deleteById(id);
     }
 }

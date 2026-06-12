@@ -35,7 +35,6 @@ export class DreamFormComponent {
   // Signal contenant le rêve actuellement édité (si présent).
   selectedDreamToEdit = this.dreamService.selectedDreamToEdit;
   editOrCreateLabel = this.dreamService.editOrCreateLabel;
-
   // Formulaire réactif utilisé pour la création et l’édition.
   dreamForm = this.formBuilder.group({
     title: ['', Validators.required],
@@ -71,21 +70,34 @@ export class DreamFormComponent {
         content: formValue.content ?? '',
         type: (formValue.type ?? 'normal') as Dream['type'],
       };
-      
-      this.dreamService.updateDream(selectedDream.id, updatedDream);
-      this.toast.show("Rêve modifié", "info")
+    
+      this.dreamService.updateDream(selectedDream.id!, updatedDream).subscribe({
+        next: () => {
+          this.toast.show('Rêve modifié', 'info');
+          this.selectedDreamToEdit.set(undefined)
+        },
+        error: () => {
+          this.toast.show('Erreur lors de la modification', 'error');
+        }
+      });
       
     } else {
       // Parcours de création.
       const newDream: Dream = {
-        id: Date.now(),
         date: new Date(),
         title: formValue.title ?? '',
         content: formValue.content ?? '',
         type: (formValue.type ?? 'normal') as Dream['type'],
       };
-      this.dreamService.addDream(newDream);
-      this.toast.show("Rêve ajouté", "success")
+      this.dreamService.addDream(newDream).subscribe(
+        {
+        next: () => {
+          this.toast.show('Rêve ajouté', 'success');
+        },
+        error: () => {
+          this.toast.show('Erreur lors de la création', 'error');
+        }
+      });
     }
 
     // Permet au parent de fermer la modale et de réinitialiser le formulaire

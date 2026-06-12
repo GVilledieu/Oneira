@@ -1,34 +1,19 @@
-import { computed, effect, Injectable, signal} from '@angular/core';
+import { computed, effect, inject, Injectable, signal} from '@angular/core';
 import { Dream } from '../models/dream.model';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DreamService {
 
-    constructor() {
-        const storedDreams = localStorage.getItem('dreams');
-        if (storedDreams) {
-            try {
-                this.DreamList.set(JSON.parse(storedDreams));
-            } catch (error) {
-                console.error('Erreur lors du parsing des rêves depuis localStorage :', error);
-            }
-        } else {
-            localStorage.setItem('dreams', JSON.stringify(this.DreamList()));
-        }
-
-        effect(() => {
-        const dreams = this.DreamList();
-        localStorage.setItem('dreams', JSON.stringify(dreams));
-        
-
-    });
-    }
+    private http = inject(HttpClient);
+    readonly url = 'http://localhost:8080/api/dreams';
+    readonly DreamList = signal<Dream[]>([]);
 
     selectedType = signal<"tous" | "normal" | "nightmare" | "lucid" | "recurring">("tous");
     selectedDreamToEdit = signal<Dream | undefined>(undefined);
     editOrCreateLabel = signal<"Ajouter un rêve" | "Modifier un rêve">("Ajouter un rêve");
     searchQuery = signal<string>("");
-
     filteredDreams = computed(() => {
         const type = this.selectedType();
         const query = this.searchQuery().toLowerCase();
@@ -44,61 +29,42 @@ export class DreamService {
         return this.DreamList().filter(dream => dream.type === type);
     });
 
-    readonly DreamList = signal<Dream[]>([
-        {
-        id: 1,
-        title: "Flying over the city",
-        type: "lucid",
-        date: new Date("2023-10-01"),
-        content: "I was flying over the city and felt a sense of freedom."
-        },
-        {
-        id: 2,
-        title: "Being chased",
-        type: "nightmare",
-        date: new Date("2023-10-02"),
-        content: "I was being chased by an unknown figure and couldn't escape."
-        },
-        {
-        id: 3,
-        title: "Winning the lottery",
-        type: "lucid",
-        date: new Date("2023-10-03"),
-        content: "I won the lottery and felt a sense of euphoria."
-        },
-        {
-        id: 4,
-        title: "Falling from a cliff",
-        type: "recurring",
-        date: new Date("2023-10-04"),
-        content: "I was falling from a cliff and couldn't stop myself."
-        },
-        {
-        id: 5,
-        title: "Reuniting with a loved one",
-        type: "normal",
-        date: new Date("2023-10-05"),
-        content: "I reunited with a loved one and felt a sense of joy."
-        }
-        
-     ]
-    );
 
+    //METHODS
 
-    addDream(dream: Dream): void {
-        this.DreamList.update(dreams => [...dreams, dream]);
+    getDreams(): Observable<Dream[]> {
+        return this.http.get<Dream[]>(this.url).pipe(
+          tap(dreams => this.DreamList.set(dreams))
+        );
     }
+    
+
+    addDream(dream:Dream): Observable<Dream> {
+        return this.http.post<Dream>(this.url,dream).pipe(
+            tap(createdDream => this.DreamList.update(dreams => [...dreams, createdDream]))
+        );
+    }
+
+
+    updateDream(id: number, dream: Dream): Observable<Dream> {
+        this.selectedDreamToEdit.set(undefined)
+        return this.http.put<Dream>(`${this.url}/${id}`, dream).pipe(
+            tap(updatedDream =>  this.DreamList.update(dreams => dreams.map(dream => dream.id === id ? updatedDream : dream)))
+        );
+    }
+
+
+    deleteDream(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.url}/${id}`).pipe(
+            tap(() => this.DreamList.update(dreams => dreams.filter(dream => dream.id !== id)))
+        )
+    }
+
 
     getDreamById(id: number): Dream | undefined {
         return this.DreamList().find(dream => dream.id === id);
     }
 
-    deleteDream(id: number): void {
-        this.DreamList.update(dreams => dreams.filter(dream => dream.id !== id));
-    }
-
-
-    
     startEditingDream(id : number) {
         const dream = this.getDreamById(id);
 
@@ -107,14 +73,6 @@ export class DreamService {
             this.editOrCreateLabel.set("Modifier un rêve")
         }
         
-    }
-
-    updateDream(id: number, updatedDream: Dream): void {
-        this.DreamList.update(dreams =>
-        dreams.map(dream => dream.id === id ? updatedDream : dream
-        )
-    );
-        this.selectedDreamToEdit.set(undefined)
     }
 
     exportDreams(): void {

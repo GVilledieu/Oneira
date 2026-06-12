@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { DreamService } from '../../services/dream.service';
@@ -11,6 +11,7 @@ import { DreamFormComponent } from './dream-form/dream-form.component';
 import { ToastComponent } from './toast/toast.component';
 import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 import { DreamCardComponent } from "./dream-card/dream-card.component";
+
 
 @Component({
   selector: 'app-dream-list',
@@ -26,10 +27,14 @@ import { DreamCardComponent } from "./dream-card/dream-card.component";
   styleUrl: './dream-list.component.css'
 })
 
-export class DreamListComponent {
-
+export class DreamListComponent implements OnInit{
+  
   private dreamService = inject(DreamService);
   private toast = inject(ToastService);
+
+  ngOnInit(): void {
+      this.dreamService.getDreams().subscribe();
+  }
 
   isModalOpen = signal(false);
   isConfirmationModalOpen = signal(false);
@@ -92,9 +97,15 @@ export class DreamListComponent {
   }
 
   deleteDream(id: number): void {
-    this.dreamService.deleteDream(id);
+    this.dreamService.deleteDream(id).subscribe({
+      next: () => {
+        this.toast.show('Rêve supprimé', 'success');
+      },
+      error: () => {
+        this.toast.show('Erreur lors de la suppression', 'error');
+      }
+    });
     this.closeConfirmationModal();
-    this.toast.show('Rêve supprimé', 'success');
   }
 
   updateDream(id: number): void {
