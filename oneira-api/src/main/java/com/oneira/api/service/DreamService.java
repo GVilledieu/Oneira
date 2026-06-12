@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.oneira.api.entity.Dream;
+import com.oneira.api.exception.DreamNotFoundException;
 import com.oneira.api.repository.DreamRepository;
 
 
@@ -20,7 +21,7 @@ public class DreamService {
     public Dream getDreamById(Long id) {
         return dreamRepository
             .findById(id)
-            .orElseThrow();
+            .orElseThrow(() -> new DreamNotFoundException(id));
     }
 
     public List<Dream> getAllDreams() {
