@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable, signal} from '@angular/core';
+import { computed, inject, Injectable, signal} from '@angular/core';
 import { Dream } from '../models/dream.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
@@ -47,7 +47,6 @@ export class DreamService {
 
 
     updateDream(id: number, dream: Dream): Observable<Dream> {
-        this.selectedDreamToEdit.set(undefined)
         return this.http.put<Dream>(`${this.url}/${id}`, dream).pipe(
             tap(updatedDream =>  this.DreamList.update(dreams => dreams.map(dream => dream.id === id ? updatedDream : dream)))
         );

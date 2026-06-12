@@ -100,12 +100,13 @@ export class DreamListComponent implements OnInit{
     this.dreamService.deleteDream(id).subscribe({
       next: () => {
         this.toast.show('Rêve supprimé', 'success');
+        this.closeConfirmationModal();
       },
       error: () => {
         this.toast.show('Erreur lors de la suppression', 'error');
+        this.closeConfirmationModal();
       }
     });
-    this.closeConfirmationModal();
   }
 
   updateDream(id: number): void {
